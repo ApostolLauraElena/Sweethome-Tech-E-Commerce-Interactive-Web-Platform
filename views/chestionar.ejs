@@ -1,13 +1,18 @@
-<form>
-    <% for(let obj of intrebari) { %>
-        <p><strong><%= obj.intrebare %></strong></p>
+<form method="POST" action="/rezultat-chestionar">
+    <% intrebari.forEach((obj, index) => { %>
+        <p><strong><%= (index + 1) %>. <%= obj.intrebare %></strong></p>
         
         <% for(let varianta of obj.variante) { %>
-            <input type="radio" name="<%= obj.intrebare %>" id="<%= varianta %>">
-            <label for="<%= varianta %>"><%= varianta %></label><br>
+            <!-- name trebuie să conțină indexul pentru a fi citit corect în app.js -->
+            <input type="radio" 
+                   name="intrebare-<%= index %>" 
+                   value="<%= varianta %>" 
+                   id="v-<%= index %>-<%= varianta %>" 
+                   required>
+            <label for="v-<%= index %>-<%= varianta %>"><%= varianta %></label><br>
         <% } %>
         <hr>
-    <% } %>
+    <% }); %>
     
     <button type="submit">Trimite</button>
 </form>

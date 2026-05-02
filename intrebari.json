@@ -1,0 +1,42 @@
+[
+  {
+    "intrebare": "Din ce categorie de electrocasnice face parte mașina de spălat rufe?",
+    "variante": ["Electrocasnice mari", "Electrocasnice mici", "Aparate de îngrijire personală", "Echipamente IT"],
+    "corect": 0
+  },
+  {
+    "intrebare": "Ce tehnologie ajută la prevenirea formării gheții în interiorul frigiderelor?",
+    "variante": ["Direct Cooling", "No Frost", "HydroSense", "Static Cooling"],
+    "corect": 1
+  },
+  {
+    "intrebare": "Care dintre următoarele este considerat un electrocasnic mic pentru bucătărie?",
+    "variante": ["Congelatorul", "Mașina de spălat vase", "Prăjitorul de pâine", "Hota"],
+    "corect": 2
+  },
+  {
+    "intrebare": "Ce proces de curățare a cuptorului presupune arderea resturilor la temperaturi foarte înalte?",
+    "variante": ["Curățare catalitică", "Curățare manuală", "Curățare hidrolitică", "Curățare pirolitică"],
+    "corect": 3
+  },
+  {
+    "intrebare": "În ce unitate de măsură este exprimată de obicei puterea unui aspirator?",
+    "variante": ["Amperi", "Wați (W)", "Volți", "Lumeni"],
+    "corect": 1
+  },
+  {
+    "intrebare": "Care este lățimea standard (în cm) pentru mașinile de spălat vase de tip 'slim'?",
+    "variante": ["60 cm", "55 cm", "45 cm", "40 cm"],
+    "corect": 2
+  },
+  {
+    "intrebare": "Plitele prin inducție folosesc un câmp magnetic pentru a încălzi:",
+    "variante": ["Suprafața de sticlă", "Aerul din jur", "Direct vasul de gătit", "Rezistența electrică"],
+    "corect": 2
+  },
+  {
+    "intrebare": "Din ce subcategorie face parte uscătorul de păr?",
+    "variante": ["Îngrijirea locuinței", "Îngrijire personală", "Electrocasnice mari", "Climatizare"],
+    "corect": 1
+  }
+]
