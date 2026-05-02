@@ -1,0 +1,77 @@
+/* Palette: Coral (#FF6B6B) pentru energie, Deep Teal (#2D4059) pentru încredere */
+:root {
+    --primary: #FF6B6B;
+    --secondary: #4ECDC4;
+    --dark: #2D4059;
+    --light: #F7FFF7;
+    --shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--light);
+    color: var(--dark);
+    margin: 0;
+    line-height: 1.6;
+}
+
+header {
+    background: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border-bottom: 5px solid var(--primary);
+}
+
+header h1 {
+    margin: 0;
+    color: var(--primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* Carduri pentru întrebări */
+.question-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+}
+
+.question-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Stil pentru butoane radio "inovative" */
+input[type="radio"] {
+    accent-color: var(--secondary);
+    transform: scale(1.2);
+    margin-right: 10px;
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 30px auto;
+    font-weight: bold;
+}
+
+button:hover {
+    background: var(--dark);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
