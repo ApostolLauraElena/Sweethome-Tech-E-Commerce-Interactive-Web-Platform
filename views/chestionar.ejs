@@ -1,0 +1,13 @@
+<form>
+    <% for(let obj of intrebari) { %>
+        <p><strong><%= obj.intrebare %></strong></p>
+        
+        <% for(let varianta of obj.variante) { %>
+            <input type="radio" name="<%= obj.intrebare %>" id="<%= varianta %>">
+            <label for="<%= varianta %>"><%= varianta %></label><br>
+        <% } %>
+        <hr>
+    <% } %>
+    
+    <button type="submit">Trimite</button>
+</form>
