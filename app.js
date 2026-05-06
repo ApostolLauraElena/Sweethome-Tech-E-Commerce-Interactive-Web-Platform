@@ -1,7 +1,9 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const cookieParser=require('cookie-parser'); 
 const bodyParser = require('body-parser')
 const app = express();
+app.use(cookieParser());
 const port = 6789;
 // directorul 'views' va conține fișierele .ejs (html + js executat la server)
 app.set('view engine', 'ejs');
@@ -16,16 +18,34 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // la accesarea din browser adresei http://localhost:6789/ se va returna textul 'HelloWorld'
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
-app.get('/', async(req, res) => res.render('index.ejs'));
+app.get('/', async(req, res) =>{ 
+    const username = req.cookies.utilizator;
+    res.render('index.ejs',{ utilizator: username } );
+})
 // la accesarea din browser adresei http://localhost:6789/chestionar se va apela funcția specificată
 const fs = require('fs');
 app.get('/autentificare', async(req, res) => {
-    res.render('autentificare');
+    const username = req.cookies.utilizator;
+    const mesajEroare = req.cookies.mesajEroare;
+    res.render('autentificare',{utilizator: username,  mesajEroare:mesajEroare}); 
 });
 app.post('/verificare-autentificare', (req, res) => {
-    console.log(req.body)
-    res.send('Datele au fost recepționate');
+    const utilizatorIntrodus = req.body.utilizator;
+    const parolaIntrodusa = req.body.parola;
+
+    console.log("Date primite la verificare:", req.body);
+
+    if (utilizatorIntrodus === 'aaa' && parolaIntrodusa === 'aaa') { // Poți pune 'Ion' și '12345'
+        console.log("Autentificare reușită pentru:", utilizatorIntrodus);
+        res.cookie('utilizator', utilizatorIntrodus);
+        res.redirect('/');
+    } else {
+        console.log("Autentificare eșuată!");
+        res.cookie('mesajEroare', "Autentificare eșuată!");
+        res.redirect('/autentificare');
+    }
 });
+
 app.get('/chestionar', async (req, res) => {
     try {
        const data = await fs.promises.readFile('intrebari.json', 'utf8');

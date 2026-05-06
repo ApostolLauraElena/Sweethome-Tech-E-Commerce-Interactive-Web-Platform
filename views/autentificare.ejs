@@ -1,3 +1,9 @@
+<h2>Autentificare</h2>
+
+<%if(locals.mesajEroare){ %>
+    <p style="color: red; font-weight: bold;"><%= mesajEroare %></p>
+<%}%>
+
 <form method="POST" action=" /verificare-autentificare">
     <label for="utilizator">Utilizator</label>
     <input type="text" id="utilizator" name="utilizator" required><br>

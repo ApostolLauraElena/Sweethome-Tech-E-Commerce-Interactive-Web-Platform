@@ -1,3 +1,7 @@
-<div>
-    <a href="/autentificare">Autentificare</a>
-</div>
+<% if (locals.utilizator) { %>
+    <h2 style="color: green;">Bine ai venit, <%= utilizator %>!</h2>
+<% } else { %>
+    <h2>Pagina Principală</h2>
+    <p>Pentru a accesa opțiunile, te rugăm să te autentifici.</p>
+    <a href="/autentificare">Mergi la pagina de Autentificare</a>
+<% } %>
