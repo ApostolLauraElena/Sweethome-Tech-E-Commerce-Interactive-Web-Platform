@@ -16,10 +16,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // la accesarea din browser adresei http://localhost:6789/ se va returna textul 'HelloWorld'
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
-app.get('/', (req, res) => res.send('Hello World'));
+app.get('/', async(req, res) => res.render('index.ejs'));
 // la accesarea din browser adresei http://localhost:6789/chestionar se va apela funcția specificată
 const fs = require('fs');
-
+app.get('/autentificare', async(req, res) => {
+    res.render('autentificare');
+});
+app.post('/verificare-autentificare', (req, res) => {
+    console.log(req.body)
+    res.send('Datele au fost recepționate');
+});
 app.get('/chestionar', async (req, res) => {
     try {
        const data = await fs.promises.readFile('intrebari.json', 'utf8');
@@ -51,3 +57,8 @@ app.post('/rezultat-chestionar', async (req, res) => {
 });
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost:
 :${port}/`));
+//tema2 -eroare in caz de autetif gresita, mesaj bun venit dca e bun
+//('/autentificare'...)
+//req.cookies.username
+//   .mesajEroare
+// res.render('autentificare', {utilizator:username, mesajEroare:mesajErr})
