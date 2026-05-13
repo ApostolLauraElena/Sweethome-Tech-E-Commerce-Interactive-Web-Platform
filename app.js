@@ -16,9 +16,10 @@ app.use(session({
     saveUninitialized: true
 }));
 app.use(cookieParser());
-app.use((req, res, next) => { // Adaugă 'next' aici
+app.use((req, res, next) => { 
     res.locals.utilizator = req.session.utilizator || null;
-    next(); // Apelează 'next()' pentru a trece la următoarea rută
+    res.locals.session = req.session;
+    next();
 });
 const port = 6789;
 // directorul 'views' va conține fișierele .ejs (html + js executat la server)
@@ -166,11 +167,39 @@ app.get('/inserare-bd', (req, res) => {
 app.post('/adaugare-cos', (req, res) => {
     const idProdus = req.body.id;
     if (!req.session.cos) {
-        req.session.cos = [];
+        req.session.cos = {};
     }
-    req.session.cos.push(idProdus);
-    
+    //req.session.cos.push(idProdus);
+
+    if (req.session.cos[idProdus]) {
+        req.session.cos[idProdus]++;
+    } else {
+        req.session.cos[idProdus] = 1;
+    }
+
     console.log("Coș actualizat:", req.session.cos);
     res.redirect('/');
 });
+app.get('/vizualizare-cos', (req, res) => {
+    const cos = req.session.cos || {};
+    const idsInCos = Object.keys(cos).filter(id => cos[id] > 0 && !isNaN(id));
+
+    if (idsInCos.length === 0) {
+        return res.render('vizualizare-cos', { produseCos: [], cos: {},utilizator: req.session.utilizator });
+    }
+    const placeholders = idsInCos.map(() => '?').join(',');
+    const sql = `SELECT * FROM produse WHERE id IN (${placeholders})`;
+
+    db.all(sql, idsInCos, (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            return res.send("Eroare la incarcarea cosului.");
+        }
+        res.render('vizualizare-cos', {
+            produseCos: rows,
+            cos: cos,
+            utilizator: req.session.utilizator
+        });
+    });
+}); //de tratat cazul cu duplicate 
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost::${port}/`));

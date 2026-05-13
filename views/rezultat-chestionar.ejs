@@ -1,21 +1,24 @@
 <div>
     <h2>Rezultatele Chestionarului</h2>
-    
-    <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
-        <h3>Scorul tău este: <span style="color: blue;"><%= scor %></span> din <%= total %></h3>
-        
+
+    <div>
+        <h3>Scorul tău este: <span>
+                <%= scor %>
+            </span> din <%= total %>
+        </h3>
+
         <p>
-            <% if (scor === total) { %>
+            <% if (scor===total) { %>
                 Felicitări! Ai răspuns corect la toate întrebările! 🏆
-            <% } else if (scor > total / 2) { %>
-                Nu e rău, dar se poate și mai bine! 👍
-            <% } else { %>
-                Poate ar trebui să mai revizuiești cunoștințele despre electrocasnice. 📚
-            <% } %>
+                <% } else if (scor> total / 2) { %>
+                    Nu e rău, dar se poate și mai bine! 👍
+                    <% } else { %>
+                        Poate ar trebui să mai revizuiești cunoștințele despre electrocasnice. 📚
+                        <% } %>
         </p>
     </div>
 
     <a href="/chestionar">
-        <button style="padding: 10px; cursor: pointer;">Încearcă din nou</button>
+        <button>Încearcă din nou</button>
     </a>
 </div>

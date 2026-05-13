@@ -1,13 +1,19 @@
-<h2>Autentificare</h2>
+<div class="auth-page">
+    <div class="auth-card">
+        <h2>Autentificare</h2>
 
-<%if(locals.mesajEroare){ %>
-    <p style="color: red; font-weight: bold;"><%= mesajEroare %></p>
-<%}%>
+        <% if(locals.mesajEroare) { %>
+            <div class="eroare"><%= mesajEroare %></div>
+        <% } %>
 
-<form method="POST" action=" /verificare-autentificare">
-    <label for="utilizator">Utilizator</label>
-    <input type="text" id="utilizator" name="utilizator" required><br>
-    <label for="parola">Parola</label>
-    <input type="password" id="parola" name="parola" required>
-    <button type="submit">Trimite</button>
-</form>
+        <form method="POST" action="/verificare-autentificare" class="auth-form">
+            <label for="utilizator">Utilizator</label>
+            <input type="text" id="utilizator" name="utilizator" placeholder="Introdu username-ul..." required>
+            
+            <label for="parola">Parolă</label>
+            <input type="password" id="parola" name="parola" placeholder="Introdu parola..." required>
+            
+            <button type="submit">Conectează-te 🌿</button>
+        </form>
+    </div>
+</div>

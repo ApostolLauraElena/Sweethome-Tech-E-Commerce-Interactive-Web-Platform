@@ -1,28 +1,29 @@
 <html>
-	<head>
-    	<title>Electro-Smart Quiz</title>
-    	<link rel="stylesheet" href="/style.css">
-	</head>
-	<body>
-		<header>
-			<h1>PW</h1>
-			<div>
-				<% if (locals.utilizator) { %>
-					<span>Autentificat ca <strong><%= utilizator.prenume %> <%= utilizator.nume %></strong></span>
-					<a href="/deconectare" style="margin-left: 10px;">
-						<button style="cursor: pointer;">De-logare</button>
-					</a>
-				<% } else { %>
-					<a href="/autentificare">Autentificare</a>
-				<% } %>
-        	</div>
-		</header>
-		<main>
-			<%-body%>
-		</main>
-		<footer> 
-            &copy; Programare web 2026
-		</footer>
-	</body>
-</html>
 
+<head>
+	<title>Electro-Smart</title>
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+	<header>
+    <h1>sweethome tech</h1>
+    <div class="user-nav">
+        <% if (locals.utilizator) { %>
+            <span class="user-info">Autentificat ca <strong><%= utilizator.prenume %> <%= utilizator.nume %></strong></span>
+            <a href="/deconectare" class="btn-logout">De-logare</a>
+        <% } else { %>
+            <a href="/autentificare" class="btn-auth">Autentificare</a>
+        <% } %>
+    </div>
+</header>
+	<main>
+		<%-body%>
+
+	</main>
+	<footer>
+		&copy; Programare web 2026
+	</footer>
+</body>
+
+</html>
