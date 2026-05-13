@@ -6,6 +6,16 @@
 	<body>
 		<header>
 			<h1>PW</h1>
+			<div>
+				<% if (locals.utilizator) { %>
+					<span>Autentificat ca <strong><%= utilizator.prenume %> <%= utilizator.nume %></strong></span>
+					<a href="/deconectare" style="margin-left: 10px;">
+						<button style="cursor: pointer;">De-logare</button>
+					</a>
+				<% } else { %>
+					<a href="/autentificare">Autentificare</a>
+				<% } %>
+        	</div>
 		</header>
 		<main>
 			<%-body%>
