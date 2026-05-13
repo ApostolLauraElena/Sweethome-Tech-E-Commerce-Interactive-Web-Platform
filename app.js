@@ -1,6 +1,6 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
-const cookieParser=require('cookie-parser'); 
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser')
 const app = express();
@@ -34,15 +34,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // la accesarea din browser adresei http://localhost:6789/ se va returna textul 'HelloWorld'
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
-app.get('/', (req, res) => { 
-    res.render('index'); 
+app.get('/', (req, res) => {
+    db.all("SELECT * FROM produse", [], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            return res.send("Eroare la citirea produselor");
+        }
+        res.render('index', {
+            produse: rows,
+            utilizator: req.session.utilizator
+        });
+    });
+
 });
 // la accesarea din browser adresei http://localhost:6789/chestionar se va apela funcția specificată
 const fs = require('fs');
 app.get('/autentificare', (req, res) => {
     const mesajEroare = req.cookies.mesajEroare;
-    res.clearCookie('mesajEroare'); 
-    res.render('autentificare', { mesajEroare: mesajEroare }); 
+    res.clearCookie('mesajEroare');
+    res.render('autentificare', { mesajEroare: mesajEroare });
 });
 app.post('/verificare-autentificare', async (req, res) => {
     const { utilizator, parola } = req.body;
@@ -71,9 +81,9 @@ app.post('/verificare-autentificare', async (req, res) => {
 
 app.get('/chestionar', async (req, res) => {
     try {
-       const data = await fs.promises.readFile('intrebari.json', 'utf8');
+        const data = await fs.promises.readFile('intrebari.json', 'utf8');
         const intrebari = JSON.parse(data);
-        
+
         res.render('chestionar', { intrebari: intrebari });
     } catch (err) {
         console.error("Eroare la citirea fișierului:", err);
@@ -103,7 +113,7 @@ app.get('/deconectare', (req, res) => {
         if (err) {
             console.error("Eroare la delogare:", err);
         }
-        res.redirect('/'); 
+        res.redirect('/');
     });
 });
 app.get('/creare-bd', (req, res) => {
@@ -144,7 +154,7 @@ app.get('/inserare-bd', (req, res) => {
             db.run(sql, produs, (err) => {
                 if (err) console.error("Eroare la inserare:", err.message);
                 count++;
-                
+
                 if (count === electrocasniceleMele.length) {
                     console.log("Magazinul a fost populat cu electrocasnice noi.");
                     res.redirect('/');
@@ -153,5 +163,14 @@ app.get('/inserare-bd', (req, res) => {
         });
     });
 });
-
+app.post('/adaugare-cos', (req, res) => {
+    const idProdus = req.body.id;
+    if (!req.session.cos) {
+        req.session.cos = [];
+    }
+    req.session.cos.push(idProdus);
+    
+    console.log("Coș actualizat:", req.session.cos);
+    res.redirect('/');
+});
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost::${port}/`));

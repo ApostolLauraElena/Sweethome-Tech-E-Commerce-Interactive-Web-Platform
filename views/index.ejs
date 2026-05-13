@@ -9,3 +9,22 @@
     <a href="/creare-bd"><button>Creare BD</button></a>
     <a href="/inserare-bd"><button>Încarcare BD</button></a>
 </div>
+<div class="lista-produse">
+    <% produse.forEach(function(p) { %>
+        <div class="produs-card">
+            <img src="/imagini/<%= p.imagine %>" alt="<%= p.nume %>" style="width:150px;">
+            <h3><%= p.nume %></h3>
+            <p><%= p.descriere %></p>
+            <p><strong>Preț: <%= p.pret %> RON</strong></p>
+
+            <% if (utilizator) { %>
+                <form action="/adaugare-cos" method="POST">
+                    <input type="hidden" name="id" value="<%= p.id %>">
+                    <button type="submit">Adaugă în coș</button>
+                </form>
+            <% } else { %>
+                <p><em>Autentifică-te pentru a cumpăra.</em></p>
+            <% } %>
+        </div>
+    <% }); %>
+</div>
