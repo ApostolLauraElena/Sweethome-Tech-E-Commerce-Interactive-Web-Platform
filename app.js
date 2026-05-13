@@ -4,6 +4,12 @@ const cookieParser=require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser')
 const app = express();
+
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const db = new sqlite3.Database('./cumparaturi.db');
+
 app.use(session({
     secret: 'cheie-secreta',
     resave: false,
@@ -100,4 +106,52 @@ app.get('/deconectare', (req, res) => {
         res.redirect('/'); 
     });
 });
+app.get('/creare-bd', (req, res) => {
+    db.run(`CREATE TABLE IF NOT EXISTS produse (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nume TEXT NOT NULL,
+        descriere TEXT,
+        pret REAL,
+        imagine TEXT
+    )`, (err) => {
+        if (err) {
+            console.error("Eroare la crearea tabelei:", err.message);
+        } else {
+            console.log("Tabela 'produse' a fost creată/verificată.");
+        }
+        res.redirect('/');
+    });
+});
+app.get('/inserare-bd', (req, res) => {
+    db.run("DELETE FROM produse", (err) => {
+        if (err) {
+            console.error("Eroare la ștergerea produselor vechi:", err.message);
+            return res.send("Eroare la curățarea bazei de date.");
+        }
+
+        const electrocasniceleMele = [
+            ['Frigider Side-by-Side', 'Capacitate 600L, No Frost, Argintiu', 3500, 'frigider.jpg'],
+            ['Mașină de spălat rufe', '9kg, 1400 RPM, Clasa A+++', 1800, 'masina-spalat.jpg'],
+            ['Cuptor cu microunde', '800W, 20L, Funcție Grill', 450, 'microunde.jpg'],
+            ['Aspirator Robot', 'Navigare Laser, Autonomie 120 min', 1200, 'aspirator.jpg'],
+            ['Mașină de spălat vase', '14 seturi, 6 programe', 2100, 'masina-vase.jpg']
+        ];
+
+        const sql = `INSERT INTO produse (nume, descriere, pret, imagine) VALUES (?, ?, ?, ?)`;
+
+        let count = 0;
+        electrocasniceleMele.forEach((produs) => {
+            db.run(sql, produs, (err) => {
+                if (err) console.error("Eroare la inserare:", err.message);
+                count++;
+                
+                if (count === electrocasniceleMele.length) {
+                    console.log("Magazinul a fost populat cu electrocasnice noi.");
+                    res.redirect('/');
+                }
+            });
+        });
+    });
+});
+
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost::${port}/`));
