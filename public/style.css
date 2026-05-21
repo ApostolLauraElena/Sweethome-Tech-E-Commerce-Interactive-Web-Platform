@@ -29,7 +29,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
 }
 
 header h1 {
@@ -45,10 +45,12 @@ header h1 {
     gap: 20px;
 }
 
-.user-info { font-size: 0.9rem; }
+.user-info {
+    font-size: 0.9rem;
+}
 
 /* Butoane specifice tip link din Header */
-header a.btn-auth, 
+header a.btn-auth,
 header a.btn-logout {
     background: var(--mint-primary);
     padding: 10px 25px;
@@ -59,7 +61,7 @@ header a.btn-logout {
     display: inline-block;
 }
 
-header a.btn-auth:hover, 
+header a.btn-auth:hover,
 header a.btn-logout:hover {
     background: var(--mint-dark);
     transform: translateY(-2px);
@@ -78,16 +80,16 @@ header a.btn-logout:hover {
 .produs-card img {
     /* Forțăm lățimea să fie maximul disponibil în card */
     width: 100%;
-    
+
     /* Setăm o înălțime fixă pentru a alinia toate cardurile egal */
-    height: 220px; 
-    
+    height: 220px;
+
     /* PROPRIETATEA MAGICĂ: încadrează poza fără să o deformeze sau să o lungească */
-    object-fit: contain; 
-    
+    object-fit: contain;
+
     /* Adăugăm un fundal foarte deschis pentru a evidenția pozele care nu ocupă tot spațiul */
-    background-color: #fdfdfd; 
-    
+    background-color: #fdfdfd;
+
     padding: 10px;
     border-radius: 15px;
     margin-bottom: 15px;
@@ -103,13 +105,14 @@ header a.btn-logout:hover {
 .produs-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Aliniază conținutul vertical */
+    justify-content: space-between;
+    /* Aliniază conținutul vertical */
     overflow: hidden;
     background: var(--white);
     border-radius: 24px;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
     border: 1px solid rgba(185, 251, 192, 0.3);
 }
 
@@ -153,7 +156,11 @@ button:hover {
     text-align: left;
 }
 
-.auth-form label { margin-bottom: 5px; font-weight: 600; color: #7d8a83; }
+.auth-form label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #7d8a83;
+}
 
 .auth-form input {
     margin-bottom: 20px;
@@ -162,7 +169,9 @@ button:hover {
     border-radius: 15px;
 }
 
-.auth-form button { width: 100%; }
+.auth-form button {
+    width: 100%;
+}
 
 .eroare {
     background: #fff0f0;
@@ -171,6 +180,7 @@ button:hover {
     border-radius: 12px;
     margin-bottom: 20px;
 }
+
 /* Containerul lărgit pentru coș */
 .cos-container {
     max-width: 800px;
@@ -200,7 +210,8 @@ button:hover {
 
 /* Stil pentru ultimul rând (Total) */
 .rand-total td {
-    border-bottom: none; /* Scoatem linia de sub total */
+    border-bottom: none;
+    /* Scoatem linia de sub total */
     padding-top: 30px;
 }
 

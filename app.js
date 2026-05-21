@@ -3,6 +3,8 @@ const expressLayouts = require('express-ejs-layouts');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser')
+const bcrypt = require('bcrypt');
+const sanitizer = require('sanitizer');
 const app = express();
 
 const sqlite3 = require('sqlite3').verbose();
@@ -16,7 +18,7 @@ app.use(session({
     saveUninitialized: true
 }));
 app.use(cookieParser());
-app.use((req, res, next) => { 
+app.use((req, res, next) => {
     res.locals.utilizator = req.session.utilizator || null;
     res.locals.session = req.session;
     next();
@@ -55,16 +57,18 @@ app.get('/autentificare', (req, res) => {
     res.clearCookie('mesajEroare');
     res.render('autentificare', { mesajEroare: mesajEroare });
 });
-app.post('/verificare-autentificare', async (req, res) => {
-    const { utilizator, parola } = req.body;
+
+app.post('/verificare-autentificare' , async (req, res) => {
+    const utilizator = sanitizer.sanitize(req.body.utilizator);
+    const parola = sanitizer.sanitize(req.body.parola);
 
     try {
         const data = await fs.promises.readFile('utilizatori.json', 'utf8');
         const utilizatori = JSON.parse(data);
 
-        const utilizatorGasit = utilizatori.find(u => u.utilizator === utilizator && u.parola === parola);
+        const utilizatorGasit = utilizatori.find(u => u.utilizator === utilizator);
 
-        if (utilizatorGasit) {
+        if (utilizatorGasit && await bcrypt.compare(parola, utilizatorGasit.parola)) {
             req.session.utilizator = {
                 username: utilizatorGasit.utilizator,
                 nume: utilizatorGasit.nume,
@@ -185,7 +189,7 @@ app.get('/vizualizare-cos', (req, res) => {
     const idsInCos = Object.keys(cos).filter(id => cos[id] > 0 && !isNaN(id));
 
     if (idsInCos.length === 0) {
-        return res.render('vizualizare-cos', { produseCos: [], cos: {},utilizator: req.session.utilizator });
+        return res.render('vizualizare-cos', { produseCos: [], cos: {}, utilizator: req.session.utilizator });
     }
     const placeholders = idsInCos.map(() => '?').join(',');
     const sql = `SELECT * FROM produse WHERE id IN (${placeholders})`;
@@ -201,5 +205,6 @@ app.get('/vizualizare-cos', (req, res) => {
             utilizator: req.session.utilizator
         });
     });
-}); //de tratat cazul cu duplicate 
+});
+
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost::${port}/`));

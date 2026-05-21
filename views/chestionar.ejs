@@ -1,18 +1,19 @@
 <form method="POST" action="/rezultat-chestionar">
-    <% intrebari.forEach((obj, index) => { %>
+	<% intrebari.forEach((obj, index)=> { %>
 		<div class="question-card">
-			<p><strong><%= (index + 1) %>. <%= obj.intrebare %></strong></p>
-			
+			<p><strong>
+					<%= (index + 1) %>. <%= obj.intrebare %>
+				</strong></p>
+
 			<% for(let varianta of obj.variante) { %>
-				<input type="radio" 
-					name="intrebare-<%= index %>" 
-					value="<%= varianta %>" 
-					id="v-<%= index %>-<%= varianta %>" 
-					required>
-				<label for="v-<%= index %>-<%= varianta %>"><%= varianta %></label><br>
-			<% } %>
+				<input type="radio" name="intrebare-<%= index %>" value="<%= varianta %>"
+					id="v-<%= index %>-<%= varianta %>" required>
+				<label for="v-<%= index %>-<%= varianta %>">
+					<%= varianta %>
+				</label><br>
+				<% } %>
 		</div>
-    <% }); %>
-    
-    <button type="submit">Trimite</button>
+		<% }); %>
+
+			<button type="submit">Trimite</button>
 </form>

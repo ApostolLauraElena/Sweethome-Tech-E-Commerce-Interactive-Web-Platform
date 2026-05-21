@@ -1,13 +1,13 @@
 [
   {
     "utilizator": "aaa",
-    "parola": "aaa",
+    "parola": "$2a$12$BCUhY5YOP0XS5ulUSHleBelFsncp/E6gH4ZRw1ly0mIwpxh0GPXBG",
     "nume": "Popescu",
     "prenume": "Ion"
   },
   {
     "utilizator": "test",
-    "parola": "1234",
+    "parola": "$2a$12$8qgYmxashmotIKZrYJW8UeeEdd8r6O6fTI16w38uVF8ol.ubaPPm.",
     "nume": "Ionescu",
     "prenume": "Ana"
   }

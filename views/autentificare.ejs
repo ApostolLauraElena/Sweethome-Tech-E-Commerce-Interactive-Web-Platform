@@ -3,17 +3,19 @@
         <h2>Autentificare</h2>
 
         <% if(locals.mesajEroare) { %>
-            <div class="eroare"><%= mesajEroare %></div>
-        <% } %>
+            <div class="eroare">
+                <%= mesajEroare %>
+            </div>
+            <% } %>
 
-        <form method="POST" action="/verificare-autentificare" class="auth-form">
-            <label for="utilizator">Utilizator</label>
-            <input type="text" id="utilizator" name="utilizator" placeholder="Introdu username-ul..." required>
-            
-            <label for="parola">Parolă</label>
-            <input type="password" id="parola" name="parola" placeholder="Introdu parola..." required>
-            
-            <button type="submit">Conectează-te 🌿</button>
-        </form>
+                <form method="POST" action="/verificare-autentificare" class="auth-form">
+                    <label for="utilizator">Utilizator</label>
+                    <input type="text" id="utilizator" name="utilizator" placeholder="Introdu username-ul..." required>
+
+                    <label for="parola">Parolă</label>
+                    <input type="password" id="parola" name="parola" placeholder="Introdu parola..." required>
+
+                    <button type="submit">Conectează-te 🌿</button>
+                </form>
     </div>
 </div>

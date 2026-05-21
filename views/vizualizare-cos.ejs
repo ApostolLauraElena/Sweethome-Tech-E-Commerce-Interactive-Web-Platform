@@ -2,7 +2,7 @@
     <div class="auth-card cos-container">
         <h2>Coșul tău de cumpărături 🛒</h2>
 
-        <% if(produseCos.length > 0) { %>
+        <% if(produseCos.length> 0) { %>
             <table class="cos-table">
                 <tr class="rand-header">
                     <th>Produs</th>
@@ -11,39 +11,45 @@
                     <th>Subtotal</th>
                 </tr>
 
-                <% let totalGeneral = 0; %>
-                <% produseCos.forEach(function(p) { %>
-                    <% 
-                       let cantitate = cos[p.id]; 
-                       let totalProdus = p.pret * cantitate;
-                       totalGeneral += totalProdus; 
-                    %>
-                    <tr>
-                        <td><strong><%= p.nume %></strong></td>
-                        <td><%= p.pret %> RON</td>
-                        <td>
-                            <span class="badge"><%= cantitate %> buc.</span>
-                        </td>
-                        <td><strong class="pret-subtotal"><%= totalProdus %> RON</strong></td>
-                    </tr>
-                <% }); %>
+                <% let totalGeneral=0; %>
+                    <% produseCos.forEach(function(p) { %>
+                        <% let cantitate=cos[p.id]; let totalProdus=p.pret * cantitate; totalGeneral +=totalProdus; %>
+                            <tr>
+                                <td><strong>
+                                        <%= p.nume %>
+                                    </strong></td>
+                                <td>
+                                    <%= p.pret %> RON
+                                </td>
+                                <td>
+                                    <span class="badge">
+                                        <%= cantitate %> buc.
+                                    </span>
+                                </td>
+                                <td><strong class="pret-subtotal">
+                                        <%= totalProdus %> RON
+                                    </strong></td>
+                            </tr>
+                            <% }); %>
 
-                <tr class="rand-total">
-                    <td colspan="3"><strong>Total de plată:</strong></td>
-                    <td><strong><%= totalGeneral %> RON</strong></td>
-                </tr>
+                                <tr class="rand-total">
+                                    <td colspan="3"><strong>Total de plată:</strong></td>
+                                    <td><strong>
+                                            <%= totalGeneral %> RON
+                                        </strong></td>
+                                </tr>
             </table>
 
             <button class="btn-checkout" onclick="alert('Comandă plasată cu succes! 🌿')">
                 Trimite comanda către noi 🌿
             </button>
-        <% } else { %>
-            <p class="mesaj-gol">Coșul tău este gol momentan.</p>
-            <a href="/" class="btn-link">Mergi la magazin</a>
-        <% } %>
+            <% } else { %>
+                <p class="mesaj-gol">Coșul tău este gol momentan.</p>
+                <a href="/" class="btn-link">Mergi la magazin</a>
+                <% } %>
 
-        <div class="footer-nav-cos">
-            <a href="/" class="link-retur">← Înapoi la magazin</a>
-        </div>
+                    <div class="footer-nav-cos">
+                        <a href="/" class="link-retur">← Înapoi la magazin</a>
+                    </div>
     </div>
 </div>

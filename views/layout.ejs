@@ -7,16 +7,19 @@
 
 <body>
 	<header>
-    <h1>sweethome tech</h1>
-    <div class="user-nav">
-        <% if (locals.utilizator) { %>
-            <span class="user-info">Autentificat ca <strong><%= utilizator.prenume %> <%= utilizator.nume %></strong></span>
-            <a href="/deconectare" class="btn-logout">De-logare</a>
-        <% } else { %>
-            <a href="/autentificare" class="btn-auth">Autentificare</a>
-        <% } %>
-    </div>
-</header>
+		<h1>sweethome tech</h1>
+		<div class="user-nav">
+			<% if (locals.utilizator) { %>
+				<span class="user-info">Autentificat ca <strong>
+						<%= utilizator.prenume %>
+							<%= utilizator.nume %>
+					</strong></span>
+				<a href="/deconectare" class="btn-logout">De-logare</a>
+				<% } else { %>
+					<a href="/autentificare" class="btn-auth">Autentificare</a>
+					<% } %>
+		</div>
+	</header>
 	<main>
 		<%-body%>
 
