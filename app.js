@@ -5,10 +5,23 @@ const session = require('express-session');
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt');
 const sanitizer = require('sanitizer');
-const csrf = require('csurf');
-const csrfProtection = csrf();
+
+const încercăriLogare = {}; 
+const penalizăriTimp = [ 60 * 1000, 5 * 60 * 1000, 15 * 60 * 1000];
+const track404 = {};
+const MAX_404_ERORI = 5; 
+const INTERVAL_TIMP_404 = 60 * 1000; 
+const TIMP_BLOCARE_DOS = 10 * 60 * 1000;
 
 const app = express();
+
+app.use((req, res, next) => {
+    const ip = req.ip;
+    if (track404[ip] && track404[ip].blocatPanaLa && Date.now() < track404[ip].blocatPanaLa) {
+        return res.status(403).send("403 Forbidden: Acces interzis temporar. Comportament suspect detectat (Prevenire DoS).");
+    }
+    next();
+});
 
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
@@ -30,6 +43,7 @@ app.use((req, res, next) => {
     res.locals.session = req.session;
     next();
 });
+
 const port = 6789;
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
@@ -62,6 +76,10 @@ const verificareAdmin = (req, res, next) =>{
         res.status(403).send("403 Forbidden: Acces interzis. Doar administratorii pot accesa această resursă.");
     }
 };
+
+const csrf = require('csurf');
+const csrfProtection = csrf();
+
 app.get('/admin', verificareAdmin, csrfProtection, (req, res) => {
     res.render('admin', { 
         csrfToken: req.csrfToken(), 
@@ -82,7 +100,19 @@ app.post('/admin/adauga-produs', verificareAdmin, csrfProtection, (req, res) => 
         res.redirect('/'); 
     });
 });
-app.post('/verificare-autentificare' , async (req, res) => {
+app.post('/verificare-autentificare', async (req, res) => {
+    const ip = req.ip;
+    const now = Date.now();
+    if (!încercăriLogare[ip]) {
+        încercăriLogare[ip] = { incercariGresite: 0, indexPenalizare: 0, blocatPanaLa: 0 };
+    }
+
+    if (now < încercăriLogare[ip].blocatPanaLa) {
+        const minuteRamase = Math.ceil((încercăriLogare[ip].blocatPanaLa - now) / 60000);
+        res.cookie('mesajEroare', `Prea multe încercări. Cont blocat. Încearcă din nou în ${minuteRamase} minute.`);
+        return res.redirect('/autentificare');
+    }
+
     const utilizator = sanitizer.sanitize(req.body.utilizator);
     const parola = sanitizer.sanitize(req.body.parola);
 
@@ -93,6 +123,9 @@ app.post('/verificare-autentificare' , async (req, res) => {
         const utilizatorGasit = utilizatori.find(u => u.utilizator === utilizator);
 
         if (utilizatorGasit && await bcrypt.compare(parola, utilizatorGasit.parola)) {
+           
+            încercăriLogare[ip] = { incercariGresite: 0, indexPenalizare: 0, blocatPanaLa: 0 };
+            
             req.session.utilizator = {
                 username: utilizatorGasit.utilizator,
                 nume: utilizatorGasit.nume,
@@ -101,6 +134,18 @@ app.post('/verificare-autentificare' , async (req, res) => {
             };
             res.redirect('/');
         } else {
+            încercăriLogare[ip].incercariGresite++;
+            
+            if (încercăriLogare[ip].incercariGresite >= 3) {
+                const idx = încercăriLogare[ip].indexPenalizare;
+                încercăriLogare[ip].blocatPanaLa = now + penalizăriTimp[idx];
+                
+                if (idx < penalizăriTimp.length - 1) {
+                    încercăriLogare[ip].indexPenalizare++;
+                }
+                încercăriLogare[ip].incercariGresite = 0; 
+            }
+
             res.cookie('mesajEroare', "Utilizator sau parolă incorectă!");
             res.redirect('/autentificare');
         }
@@ -230,6 +275,27 @@ app.get('/vizualizare-cos', (req, res) => {
             utilizator: req.session.utilizator
         });
     });
+});
+
+app.use((req, res) => {
+    const ip = req.ip;
+    const now = Date.now();
+
+    if (!track404[ip]) {
+        track404[ip] = { numar: 1, primaEroare: now, blocatPanaLa: null };
+    } else {
+        if (now - track404[ip].primaEroare > INTERVAL_TIMP_404) {
+            track404[ip] = { numar: 1, primaEroare: now, blocatPanaLa: null };
+        } else {
+            track404[ip].numar++;
+            
+            if (track404[ip].numar >= MAX_404_ERORI) {
+                track404[ip].blocatPanaLa = now + TIMP_BLOCARE_DOS;
+            }
+        }
+    }
+    
+    res.status(404).send("404 - Pagina nu a fost găsită. Această acțiune a fost înregistrată.");
 });
 
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost::${port}/`));

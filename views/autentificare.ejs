@@ -2,20 +2,24 @@
     <div class="auth-card">
         <h2>Autentificare</h2>
 
+        <% let esteBlocat = locals.mesajEroare && mesajEroare.includes('Cont blocat'); %>
+
         <% if(locals.mesajEroare) { %>
             <div class="eroare">
                 <%= mesajEroare %>
             </div>
-            <% } %>
+        <% } %>
 
-                <form method="POST" action="/verificare-autentificare" class="auth-form">
-                    <label for="utilizator">Utilizator</label>
-                    <input type="text" id="utilizator" name="utilizator" placeholder="Introdu username-ul..." required>
+        <form method="POST" action="/verificare-autentificare" class="auth-form">
+            <label for="utilizator">Utilizator</label>
+            <input type="text" id="utilizator" name="utilizator" placeholder="Introdu username-ul..." required <%= esteBlocat ? 'disabled' : '' %>>
 
-                    <label for="parola">Parolă</label>
-                    <input type="password" id="parola" name="parola" placeholder="Introdu parola..." required>
+            <label for="parola">Parolă</label>
+            <input type="password" id="parola" name="parola" placeholder="Introdu parola..." required <%= esteBlocat ? 'disabled' : '' %>>
 
-                    <button type="submit">Conectează-te 🌿</button>
-                </form>
+            <button type="submit" <%= esteBlocat ? 'disabled style="background-color: #ccc; cursor: not-allowed;"' : '' %>>
+                Conectează-te 🌿
+            </button>
+        </form>
     </div>
 </div>
