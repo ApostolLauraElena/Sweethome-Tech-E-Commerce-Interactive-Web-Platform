@@ -3,12 +3,21 @@
     "utilizator": "aaa",
     "parola": "$2a$12$BCUhY5YOP0XS5ulUSHleBelFsncp/E6gH4ZRw1ly0mIwpxh0GPXBG",
     "nume": "Popescu",
-    "prenume": "Ion"
+    "prenume": "Ion",
+    "rol": "USER"
   },
   {
     "utilizator": "test",
     "parola": "$2a$12$8qgYmxashmotIKZrYJW8UeeEdd8r6O6fTI16w38uVF8ol.ubaPPm.",
     "nume": "Ionescu",
-    "prenume": "Ana"
+    "prenume": "Ana",
+    "rol": "USER"
+  },
+  {
+    "utilizator": "admin",
+    "parola": "$2a$12$ae4Yi.yfWMhTh0.7IJC0pefJDgF7QVCyTw5u7V8bxrB9hOcaaEvjq",
+    "nume": "admin",
+    "prenume": "admin",
+    "rol": "ADMIN"
   }
 ]

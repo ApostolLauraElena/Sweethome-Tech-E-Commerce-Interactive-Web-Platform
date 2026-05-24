@@ -5,6 +5,9 @@ const session = require('express-session');
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt');
 const sanitizer = require('sanitizer');
+const csrf = require('csurf');
+const csrfProtection = csrf();
+
 const app = express();
 
 const sqlite3 = require('sqlite3').verbose();
@@ -15,7 +18,11 @@ const db = new sqlite3.Database('./cumparaturi.db');
 app.use(session({
     secret: 'cheie-secreta',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        secure: false
+    }
 }));
 app.use(cookieParser());
 app.use((req, res, next) => {
@@ -24,19 +31,11 @@ app.use((req, res, next) => {
     next();
 });
 const port = 6789;
-// directorul 'views' va conține fișierele .ejs (html + js executat la server)
 app.set('view engine', 'ejs');
-// suport pentru layout-uri - implicit fișierul care reprezintă template-ul site-ului este views/layout.ejs
 app.use(expressLayouts);
-// directorul 'public' va conține toate resursele accesibile direct de către client(e.g., fișiere css, javascript, imagini)
-app.use(express.static('public'))
-// corpul mesajului poate fi interpretat ca json; datele de la formular se găsesc în format json în req.body
+app.use(express.static('public'));
 app.use(bodyParser.json());
-// utilizarea unui algoritm de deep parsing care suportă obiecte în obiecte
 app.use(bodyParser.urlencoded({ extended: true }));
-// la accesarea din browser adresei http://localhost:6789/ se va returna textul 'HelloWorld'
-// proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
-// proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => {
     db.all("SELECT * FROM produse", [], (err, rows) => {
         if (err) {
@@ -50,14 +49,39 @@ app.get('/', (req, res) => {
     });
 
 });
-// la accesarea din browser adresei http://localhost:6789/chestionar se va apela funcția specificată
 const fs = require('fs');
 app.get('/autentificare', (req, res) => {
     const mesajEroare = req.cookies.mesajEroare;
     res.clearCookie('mesajEroare');
     res.render('autentificare', { mesajEroare: mesajEroare });
 });
+const verificareAdmin = (req, res, next) =>{
+    if(req.session.utilizator && req.session.utilizator.rol === 'ADMIN'){
+        next();
+    } else{
+        res.status(403).send("403 Forbidden: Acces interzis. Doar administratorii pot accesa această resursă.");
+    }
+};
+app.get('/admin', verificareAdmin, csrfProtection, (req, res) => {
+    res.render('admin', { 
+        csrfToken: req.csrfToken(), 
+        utilizator: req.session.utilizator 
+    });
+});
 
+app.post('/admin/adauga-produs', verificareAdmin, csrfProtection, (req, res) => {
+    const { nume, descriere, pret, imagine } = req.body;
+
+    const sql = `INSERT INTO produse (nume, descriere, pret, imagine) VALUES (?, ?, ?, ?)`;
+    
+    db.run(sql, [nume, descriere, pret, imagine], (err) => {
+        if (err) {
+            console.error(err.message);
+            return res.status(500).send("Eroare la adăugarea produsului.");
+        }
+        res.redirect('/'); 
+    });
+});
 app.post('/verificare-autentificare' , async (req, res) => {
     const utilizator = sanitizer.sanitize(req.body.utilizator);
     const parola = sanitizer.sanitize(req.body.parola);
@@ -72,7 +96,8 @@ app.post('/verificare-autentificare' , async (req, res) => {
             req.session.utilizator = {
                 username: utilizatorGasit.utilizator,
                 nume: utilizatorGasit.nume,
-                prenume: utilizatorGasit.prenume
+                prenume: utilizatorGasit.prenume,
+                rol: utilizatorGasit.rol
             };
             res.redirect('/');
         } else {

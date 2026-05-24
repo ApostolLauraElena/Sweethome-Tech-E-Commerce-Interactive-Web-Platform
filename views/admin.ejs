@@ -1,0 +1,23 @@
+<div class="auth-page">
+    <div class="auth-card">
+        <h2>Adăugare Produs Nou (Admin)</h2>
+        <form method="POST" action="/admin/adauga-produs" class="auth-form">
+            
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <label for="nume">Nume Produs</label>
+            <input type="text" id="nume" name="nume" required>
+
+            <label for="descriere">Descriere</label>
+            <input type="text" id="descriere" name="descriere" required>
+
+            <label for="pret">Preț (RON)</label>
+            <input type="number" id="pret" name="pret" step="0.01" required>
+
+            <label for="imagine">Nume fișier imagine (ex: frigider.jpg)</label>
+            <input type="text" id="imagine" name="imagine" required>
+
+            <button type="submit">Adaugă Produs 🛒</button>
+        </form>
+    </div>
+</div>
