@@ -6,8 +6,8 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt');
 const sanitizer = require('sanitizer');
 
-const încercăriLogare = {}; 
-const penalizăriTimp = [ 60 * 1000, 5 * 60 * 1000, 15 * 60 * 1000];
+const incercariLogare = {}; 
+const penalizariTimp = [ 60 * 1000, 5 * 60 * 1000, 15 * 60 * 1000];
 const track404 = {};
 const MAX_404_ERORI = 5; 
 const INTERVAL_TIMP_404 = 60 * 1000; 
@@ -64,9 +64,20 @@ app.get('/', (req, res) => {
 
 });
 const fs = require('fs');
+
 app.get('/autentificare', (req, res) => {
-    const mesajEroare = req.cookies.mesajEroare;
+    const ip = req.ip;
+    const now = Date.now();
+    let mesajEroare = req.cookies.mesajEroare;
     res.clearCookie('mesajEroare');
+
+
+    if (incercariLogare[ip] && now < incercariLogare[ip].blocatPanaLa) {
+       
+        const minuteRamase = Math.ceil((incercariLogare[ip].blocatPanaLa - now) / 60000);
+          mesajEroare = `Prea multe încercări. Cont blocat. Încearcă din nou în ${minuteRamase} minute.`;
+    }
+
     res.render('autentificare', { mesajEroare: mesajEroare });
 });
 const verificareAdmin = (req, res, next) =>{
@@ -103,12 +114,12 @@ app.post('/admin/adauga-produs', verificareAdmin, csrfProtection, (req, res) => 
 app.post('/verificare-autentificare', async (req, res) => {
     const ip = req.ip;
     const now = Date.now();
-    if (!încercăriLogare[ip]) {
-        încercăriLogare[ip] = { incercariGresite: 0, indexPenalizare: 0, blocatPanaLa: 0 };
+    if (!incercariLogare[ip]) {
+        incercariLogare[ip] = { incercariGresite: 0, indexPenalizare: 0, blocatPanaLa: 0 };
     }
 
-    if (now < încercăriLogare[ip].blocatPanaLa) {
-        const minuteRamase = Math.ceil((încercăriLogare[ip].blocatPanaLa - now) / 60000);
+    if (now < incercariLogare[ip].blocatPanaLa) {
+        const minuteRamase = Math.ceil((incercariLogare[ip].blocatPanaLa - now) / 60000);
         res.cookie('mesajEroare', `Prea multe încercări. Cont blocat. Încearcă din nou în ${minuteRamase} minute.`);
         return res.redirect('/autentificare');
     }
@@ -124,7 +135,7 @@ app.post('/verificare-autentificare', async (req, res) => {
 
         if (utilizatorGasit && await bcrypt.compare(parola, utilizatorGasit.parola)) {
            
-            încercăriLogare[ip] = { incercariGresite: 0, indexPenalizare: 0, blocatPanaLa: 0 };
+            incercariLogare[ip] = { incercariGresite: 0, indexPenalizare: 0, blocatPanaLa: 0 };
             
             req.session.utilizator = {
                 username: utilizatorGasit.utilizator,
@@ -134,16 +145,16 @@ app.post('/verificare-autentificare', async (req, res) => {
             };
             res.redirect('/');
         } else {
-            încercăriLogare[ip].incercariGresite++;
+            incercariLogare[ip].incercariGresite++;
             
-            if (încercăriLogare[ip].incercariGresite >= 3) {
-                const idx = încercăriLogare[ip].indexPenalizare;
-                încercăriLogare[ip].blocatPanaLa = now + penalizăriTimp[idx];
+            if (incercariLogare[ip].incercariGresite >= 3) {
+                const idx = incercariLogare[ip].indexPenalizare;
+                incercariLogare[ip].blocatPanaLa = now + penalizariTimp[idx];
                 
-                if (idx < penalizăriTimp.length - 1) {
-                    încercăriLogare[ip].indexPenalizare++;
+                if (idx < penalizariTimp.length - 1) {
+                    incercariLogare[ip].indexPenalizare++;
                 }
-                încercăriLogare[ip].incercariGresite = 0; 
+                incercariLogare[ip].incercariGresite = 0; 
             }
 
             res.cookie('mesajEroare', "Utilizator sau parolă incorectă!");
